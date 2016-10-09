@@ -6,19 +6,17 @@
     android:layout_height="match_parent"
     tools:context="com.muxistudio.jsbridge.MainActivity">
 
+    <com.muxistudio.library.BridgeWebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/btn"
+        android:layout_height="match_parent"/>
+
     <Button
         android:id="@+id/btn"
         android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_height="48dp"
-        android:text="Java invoke Js"/>
-
-
-    <com.muxistudio.library.BridgeWebView
-        android:layout_below="@+id/btn"
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </com.muxistudio.library.BridgeWebView>
+        android:text="获取账号密码"/>
 
 </RelativeLayout>
