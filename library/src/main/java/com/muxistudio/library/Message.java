@@ -15,25 +15,25 @@ public class Message {
     private static final String RESPONSE_DATA = "responseData";
     private static final String METHOD = "method";
 
-    private int callbackId;
-    private int responseId;
+    private String callbackId;
+    private String responseId;
     private String data;
     private String responseData;
     private String method;
 
-    public int getCallbackId() {
+    public String getCallbackId() {
         return callbackId;
     }
 
-    public void setCallbackId(int callbackId) {
+    public void setCallbackId(String callbackId) {
         this.callbackId = callbackId;
     }
 
-    public int getResponseId() {
+    public String getResponseId() {
         return responseId;
     }
 
-    public void setResponseId(int responseId) {
+    public void setResponseId(String responseId) {
         this.responseId = responseId;
     }
 
@@ -62,12 +62,12 @@ public class Message {
     }
 
     //把 json 转化为 Message对象
-    public static Message parseJSON(String json){
+    public static Message parseJSON(String json) {
         try {
             JSONObject object = new JSONObject(json);
             Message msg = new Message();
-            msg.setCallbackId(object.has(CALLBACK_ID) ? object.getInt(CALLBACK_ID) : -1);
-            msg.setResponseId(object.has(RESPONSE_ID) ? object.getInt(RESPONSE_ID) : -1);
+            msg.setCallbackId(object.has(CALLBACK_ID) ? object.getString(CALLBACK_ID) : null);
+            msg.setResponseId(object.has(RESPONSE_ID) ? object.getString(RESPONSE_ID) : null);
             msg.setData(object.has(DATA) ? object.getString(DATA) : null);
             msg.setResponseData(object.has(RESPONSE_DATA) ? object.getString(RESPONSE_DATA) : null);
             msg.setMethod(object.has(METHOD) ? object.getString(METHOD) : null);
@@ -78,14 +78,14 @@ public class Message {
         return null;
     }
 
-    public static String stringifyJSON(Message msg){
+    public static String stringifyJSON(Message msg) {
         try {
             JSONObject object = new JSONObject();
-            object.put(CALLBACK_ID,msg.getCallbackId());
-            object.put(RESPONSE_ID,msg.getResponseId());
-            object.put(DATA,msg.getData());
-            object.put(RESPONSE_DATA,msg.getResponseData());
-            object.put(METHOD,msg.getMethod());
+            object.put(CALLBACK_ID, msg.getCallbackId());
+            object.put(RESPONSE_ID, msg.getResponseId());
+            object.put(DATA, msg.getData());
+            object.put(RESPONSE_DATA, msg.getResponseData());
+            object.put(METHOD, msg.getMethod());
             return object.toString();
         } catch (Exception e) {
             e.printStackTrace();

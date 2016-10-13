@@ -18,8 +18,7 @@
     <input type="text" id="text2" value="password"/>
 </p>
 <p>
-    <input type="button" id="btn1" value="发送用户名和密码给Native" onclick="testClick();"
-    />
+    <input type="button" id="btn1" value="发送用户名和密码给Native" onclick="testClick();"/>
 </p>
 <p>
     <input type="button" id="btn2" value="调用Native方法" onclick="testClick1();"/>
@@ -27,15 +26,24 @@
 </body>
 
 <script>
+
+    window.JsBridge.registerJsHandler('showUser',function(){
+        var username = document.getElementById('text1').value;
+        document.getElementById('msg_in_js').innerHTML = username;
+    });
     
     function testClick(){
-    	document.getElementById("msg_in_js").innerHTML="已发送用户名和密码";
-        location.assign('http://www.baidu.com');
+        var user = document.getElementById("text1").value + document.getElementById("text2").value;
+        window.JsBridge.callJava('toast',user,null);
     }
 
     function testClick1(){
-    	document.getElementById("msg_from_java").innerHTML="收到来自Nativce的消息："
+        var str = '来自 web 的消息';
+        window.JsBridge.callJava('toast',str,function(response){
+            document.getElementById('msg_from_java').innerHTML = '接收到 native 的返回数据:' + response;
+        })
     }
+
 </script>
 
 </html>

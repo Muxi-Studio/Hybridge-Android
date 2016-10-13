@@ -1,5 +1,7 @@
 package com.muxistudio.library;
 
+import android.util.Log;
+
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
@@ -9,18 +11,26 @@ import com.tencent.smtt.sdk.WebViewClient;
 
 public class BridgeWebViewClient extends WebViewClient{
 
-    public BridgeWebViewClient() {
+    private BridgeWebView mBridgeWebView;
+
+    public BridgeWebViewClient(BridgeWebView bridgeWebView) {
         super();
+        mBridgeWebView = bridgeWebView;
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-        if ()
+        Log.d("js load url",s);
+        if (Utils.isHybridUrl(s)){
+            mBridgeWebView.handleDataFromUrl(s);
+            return true;
+        }
         return super.shouldOverrideUrlLoading(webView, s);
     }
 
     @Override
     public void onPageFinished(WebView webView, String s) {
         super.onPageFinished(webView, s);
+        Utils.loadJsBridge(webView,"WebViewJsBridge.js");
     }
 }
