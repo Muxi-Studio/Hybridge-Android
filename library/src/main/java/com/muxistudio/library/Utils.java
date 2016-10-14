@@ -28,9 +28,9 @@ public class Utils {
     public static String createJsUrl(Message msg) {
         String url;
         url = Message.stringifyJSON(msg);
-        url = url.replaceAll("\"","\\\\\\\"");
+        url = url.replace("\\\"","\\\\\"").replace("\"","\\\"");
         url = JS_BRIDGE_STR + "(\"" + url + "\");";
-        Log.d("jsbridge",url);
+        Log.d("java call js",url);
         return url;
     }
 
@@ -87,8 +87,6 @@ public class Utils {
 
     public static void loadJsBridge(WebView view, String path) {
         String jsUrl = assetFile2Str(view.getContext(), path);
-//        Log.d("jsbridge","jsbridge init");
-        Log.d("jsbridge content", jsUrl);
         view.loadUrl("javascript:" + jsUrl);
     }
 

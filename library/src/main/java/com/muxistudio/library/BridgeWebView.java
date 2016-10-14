@@ -20,8 +20,6 @@ public class BridgeWebView extends WebView {
     public HashMap<String, CallbackFunc> callbacks;
     private int uniqueId = 1;
 
-    private String JSBRIDGE_URL = "WebViewJsBridge.js";
-
     public BridgeWebView(Context context) {
         this(context, null);
     }
@@ -37,10 +35,8 @@ public class BridgeWebView extends WebView {
     }
 
     public void init() {
-//        this.setWebViewClient(new BridgeWebViewClient(this));
         handlers = new HashMap<>();
         callbacks = new HashMap<>();
-//        Utils.loadJsBridge(this, "WebViewJsBridge.js");
         setWebViewClient(new BridgeWebViewClient(this));
     }
 

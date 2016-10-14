@@ -55,7 +55,9 @@
 					responseData: responseData
 				});
 			};
+			console.log(handlerName[msg.method]);
 			handlerName[msg.method](data,callbackFunction);
+
 		}else{
 			try{
 				handlerName[msg.method](data);

@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                webView.callJs("showUser", null, new CallbackFunc() {
+                webView.callJs("showUser", "{\"data\":\"this is msg from native\"}", new CallbackFunc() {
                     @Override
                     public void callback(String data) {
                         Toast.makeText(MainActivity.this,data,Toast.LENGTH_LONG).show();
