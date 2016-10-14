@@ -7,42 +7,53 @@
 </head>
 
 <body>
-<p id="msg_in_js">
-</p>
-<p id="msg_from_java">
-</p>
-<p>
-    <input type="text" id="text1" value="username"/>
-</p>
-<p>
-    <input type="text" id="text2" value="password"/>
-</p>
-<p>
-    <input type="button" id="btn1" value="发送用户名和密码给Native" onclick="testClick();"/>
-</p>
-<p>
-    <input type="button" id="btn2" value="调用Native方法" onclick="testClick1();"/>
-</p>
+    <p id="msg_in_js">
+    </p>
+    <p id="msg_from_java">
+    </p>
+    <p>
+        <input type="text" id="text1" value="username"/>
+    </p>
+    <p>
+        <input type="text" id="text2" value="password"/>
+    </p>
+    <p>
+        <input type="button" id="btn1" value="发送用户名和密码给Native" onclick="testClick();"/>
+    </p>
+    <p>
+        <input type="button" id="btn2" value="调用Native方法" onclick="testClick1();"/>
+    </p>
 </body>
 
 <script>
 
+function testClick(){
+    var user = document.getElementById("text1").value + document.getElementById("text2").value;
+    window.JsBridge.callJava('toast',user,null);
+}
+
+function testClick1(){
+    var str = '来自 web 的消息';
+    window.JsBridge.callJava('toast',str,function(response){
+        document.getElementById('msg_from_java').innerHTML = '接收到 native 的返回数据:' + response;
+    })
+}
+
+
+function connectJsBridge(doc,callback){
+    doc.addEventListener('bridgeInit',function(){
+        callback();
+    });
+}
+
+connectJsBridge(document,function(){
+    console.log('jsbridge connect success');
     window.JsBridge.registerJsHandler('showUser',function(){
         var username = document.getElementById('text1').value;
-        document.getElementById('msg_in_js').innerHTML = username;
+        var pwd = document.getElementById('text2').value;
+        document.getElementById('msg_in_js').innerHTML = 'username:' + username + 'pwd:' + pwd;
     });
-    
-    function testClick(){
-        var user = document.getElementById("text1").value + document.getElementById("text2").value;
-        window.JsBridge.callJava('toast',user,null);
-    }
-
-    function testClick1(){
-        var str = '来自 web 的消息';
-        window.JsBridge.callJava('toast',str,function(response){
-            document.getElementById('msg_from_java').innerHTML = '接收到 native 的返回数据:' + response;
-        })
-    }
+});
 
 </script>
 
