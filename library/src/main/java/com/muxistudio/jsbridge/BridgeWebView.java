@@ -32,10 +32,9 @@ public class BridgeWebView extends WebView {
         init();
     }
 
-    public void init() {
+    public void  init() {
         handlers = new HashMap<>();
         addJavascriptInterface(new InjectedObject(),"javaInterface");
-        setWebViewClient(new BridgeWebViewClient(this));
         setWebChromeClient(new BridgeChromeClient(this));
     }
 
