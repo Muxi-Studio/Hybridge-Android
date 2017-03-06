@@ -1,41 +1,73 @@
 # YAJB-Android
 Yet Another JavaScript Bridge, Android version.
 
+## Install
 
-## How to use?
+## Usage
 
-- use it in Java
+- in xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.muxistudio.jsbridge.example.MainActivity">
+
+    <com.muxistudio.jsbridge.BridgeWebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/btn"
+        android:layout_height="match_parent"/>
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="48dp"
+        android:text="send event to web"/>
+
+</RelativeLayout>
 
 ```
-webView.callJs("functionInJs", "data", new CallbackFunc() {
-	@Override
-	public void callback(String data) {
-		// do what yout want to do with response data
-		Toast.makeText(MainActivity.this,data,Toast.LENGTH_LONG).show();
-	}
-});
 
-});
-webView.registerHandler("functionInJava", new BridgeHandler() {
-	@Override
-	public void handle(String data, CallbackFunc cb) {
-		Toast.makeText(MainActivity.this,data,Toast.LENGTH_LONG).show();
-		cb.callback("native has receive " + data);
-	}
-});
+- in Java
+
+```java
+    private BridgeWebView webView;
+    private Button button;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        webView = (BridgeWebView) findViewById(R.id.web_view);
+        button = (Button) findViewById(R.id.btn);
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setAppCacheEnabled(true);
+        //register handler to handle event from web
+        webView.register("onBtnClick", new BridgeHandler() {
+            @Override
+            public void handle(String data) {
+                Gson gson = new Gson();
+                IntData intData = gson.fromJson(data,IntData.class);
+                Toast.makeText(MainActivity.this,"id:" + intData.id,Toast.LENGTH_LONG).show();
+            }
+        });
+
+        webView.loadUrl("file:///android_asset/demo.html");
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //send event to web, invoke yajb.trigger('{"event":"onNativeButtonClick","data":{...}');
+                webView.send("onNativeButtonClick","message from java");
+
+            }
+        });
+    }
 ```
 
-- use it in Js
-
-```
-//js call java
-JsBridge.callJava('functionInJava',data,function(response){
-	//do what you want to do with reponseData
-	document.getElementById('msg_from_java').innerHTML = 'response from Native:' + response;
-});
-    
-//js register function for java to invoke
-JsBridge.registerJsHandler('functionInJs',function(data){
-   document.getElementById('msg_in_js').innerHTML = 'show message from Native:' + data;
-});
-```

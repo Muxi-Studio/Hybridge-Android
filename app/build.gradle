@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "com.muxistudio.jsbridge"
+        applicationId "com.muxistudio.jsbridge.example"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1

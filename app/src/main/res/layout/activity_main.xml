@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.muxistudio.jsbridge.MainActivity">
+    tools:context="com.muxistudio.jsbridge.example.MainActivity">
 
-    <com.muxistudio.library.BridgeWebView
+    <com.muxistudio.jsbridge.BridgeWebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_above="@+id/btn"
@@ -17,6 +17,6 @@
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="48dp"
-        android:text="获取账号密码"/>
+        android:text="send event to web"/>
 
 </RelativeLayout>
