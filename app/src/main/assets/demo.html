@@ -66,8 +66,10 @@ YAJB.prototype.trigger = function(data) {
 </p>
 </body>
 
-
 <script>
+
+console.log(window.javaInterface.toString());
+
 
 function testClick1(){
     yajb.send({event:"onBtnClick", data:{id:1}})
