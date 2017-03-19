@@ -1,5 +1,7 @@
 # YAJB-Android
 Yet Another JavaScript Bridge, Android version.
+  
+Use with [YAJB-JavaScript](https://github.com/Muxi-Studio/YAJB-JavaScript)
 
 ## Install
 
