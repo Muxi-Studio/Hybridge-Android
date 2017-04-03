@@ -8,4 +8,5 @@ public class Message {
 
     public String event;
     public Object data;
+    public int id;
 }

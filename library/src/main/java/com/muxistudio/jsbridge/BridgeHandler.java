@@ -6,5 +6,5 @@ package com.muxistudio.jsbridge;
 
 public interface BridgeHandler {
 
-    void handle(String data);
+    void handle(String data,CallbackFunc cb);
 }

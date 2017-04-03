@@ -6,7 +6,6 @@ package com.muxistudio.jsbridge;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tencent.smtt.sdk.WebView;
@@ -16,7 +15,10 @@ import java.util.HashMap;
 public class BridgeWebView extends WebView {
 
     public HashMap<String, BridgeHandler> handlers;
+    public HashMap<String, BridgeHandler> responseHandlers;
     private InjectedObject mInjectedObject;
+
+    private int uniqueId = 0;
 
     public static final String INJECTED_OBJECT_NAME = "javaInterface";
 
@@ -35,18 +37,19 @@ public class BridgeWebView extends WebView {
         init();
     }
 
-    public void  init() {
+    public void init() {
         handlers = new HashMap<>();
+        responseHandlers = new HashMap<>();
         mInjectedObject = new InjectedObject();
-        addJavascriptInterface(mInjectedObject,"javaInterface");
-        setWebChromeClient(new BridgeChromeClient(this));
+        addJavascriptInterface(mInjectedObject, "javaInterface");
+        setWebViewClient(new BridgeWebClient(this));
     }
 
-    public void setInitData(String json){
+    public void setInitData(String json) {
         mInjectedObject.setData(json);
     }
 
-    public void setInitData(Object data){
+    public void setInitData(Object data) {
         mInjectedObject.setData(data);
     }
 
@@ -68,30 +71,33 @@ public class BridgeWebView extends WebView {
 
     /**
      * send event,the object should be jsonObject
-     * @param event
-     * @param jsonObject
      */
     public void send(String event, Object jsonObject) {
+        send(event,jsonObject,null);
+    }
+
+    public void send(String event,Object jsonObject,BridgeHandler callbackHandler){
         Message message = new Message();
         message.event = event;
         message.data = jsonObject;
+        message.id = uniqueId++;
         try {
             String json = new Gson().toJson(message);
-            evaluateJavascript(String.format(JS_SEND_DATA_FORMAT,json),null);
+            if (callbackHandler != null){
+                responseHandlers.put(event + "Resolved" + (message.id),callbackHandler);
+            }
+            evaluateJavascript(String.format(JS_SEND_DATA_FORMAT, json), null);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("the object should be jsonObject");
+            throw new IllegalArgumentException("the object should be jsonObject");
         }
     }
 
     /**
      * register Java Handler to handle js event
-     * @param event
-     * @param handler
      */
     public void register(String event, BridgeHandler handler) {
         handlers.put(event, handler);
-//        mInjectedObject.send(event);
     }
 
 }

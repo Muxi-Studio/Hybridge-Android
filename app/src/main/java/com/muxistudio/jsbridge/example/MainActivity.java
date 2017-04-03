@@ -10,9 +10,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.muxistudio.jsbridge.BridgeHandler;
 import com.muxistudio.jsbridge.BridgeWebView;
+import com.muxistudio.jsbridge.CallbackFunc;
 import com.tencent.smtt.sdk.WebSettings;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 
 public class MainActivity extends Activity {
@@ -30,14 +32,6 @@ public class MainActivity extends Activity {
         button2 = (Button) findViewById(R.id.btn2);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
-//        webView.register("onBtnClick", new BridgeHandler() {
-//            @Override
-//            public void handle(String data) {
-//                Gson gson = new Gson();
-//                WebData webData = gson.fromJson(data,WebData.class);
-//                Toast.makeText(MainActivity.this,"id:" + webData.id,Toast.LENGTH_LONG).show();
-//            }
-//        });
 
         WebData webData = new WebData();
         webData.lists = new ArrayList<>();
@@ -51,20 +45,13 @@ public class MainActivity extends Activity {
         data1.transMoney = "18";
         webData.lists.add(data1);
         webView.setInitData(webData);
-        webView.loadUrl("http://10.1.1.167:3000");
-//        webView.loadUrl("file:///android_asset/demo.html");
+//        webView.loadUrl("1.1.167:3000");
+        webView.loadUrl("file:///android_asset/demo.html");
 
-        webView.register("click", new BridgeHandler() {
-            @Override
-            public void handle(String data) {
-                Log.d("jsbridge","get data from web" + data);
-                webView.send("clickResolved","msg from native");
-            }
-        });
         webView.register("click1", new BridgeHandler() {
             @Override
-            public void handle(String data) {
-                Log.d("jsbridge","get data from web" + data);
+            public void handle(String data, CallbackFunc cb) {
+                Log.d("jsbridge",data);
             }
         });
 
