@@ -2,6 +2,7 @@ package com.muxistudio.jsbridge.example;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -11,11 +12,14 @@ import com.muxistudio.jsbridge.BridgeHandler;
 import com.muxistudio.jsbridge.BridgeWebView;
 import com.tencent.smtt.sdk.WebSettings;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends Activity {
 
     private BridgeWebView webView;
     private Button button;
+    private Button button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,23 +27,57 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         webView = (BridgeWebView) findViewById(R.id.web_view);
         button = (Button) findViewById(R.id.btn);
+        button2 = (Button) findViewById(R.id.btn2);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
-        settings.setAppCacheEnabled(true);
-        webView.register("onBtnClick", new BridgeHandler() {
+//        webView.register("onBtnClick", new BridgeHandler() {
+//            @Override
+//            public void handle(String data) {
+//                Gson gson = new Gson();
+//                WebData webData = gson.fromJson(data,WebData.class);
+//                Toast.makeText(MainActivity.this,"id:" + webData.id,Toast.LENGTH_LONG).show();
+//            }
+//        });
+
+        WebData webData = new WebData();
+        webData.lists = new ArrayList<>();
+        WebData.TransData data = new WebData.TransData();
+        data.time = "2017-03-31 19:42:44";
+        data.transMoney = "2.9";
+        webData.lists.add(data);
+
+        WebData.TransData data1 = new WebData.TransData();
+        data1.time = "2017-03-30 18:33:44";
+        data1.transMoney = "18";
+        webData.lists.add(data1);
+        webView.setInitData(webData);
+        webView.loadUrl("http://10.1.1.167:3000");
+//        webView.loadUrl("file:///android_asset/demo.html");
+
+        webView.register("click", new BridgeHandler() {
             @Override
             public void handle(String data) {
-                Gson gson = new Gson();
-                WebData webData = gson.fromJson(data,WebData.class);
-                Toast.makeText(MainActivity.this,"id:" + webData.id,Toast.LENGTH_LONG).show();
+                Log.d("jsbridge","get data from web" + data);
+                webView.send("clickResolved","msg from native");
             }
         });
-        webView.loadUrl("file:///android_asset/demo.html");
+        webView.register("click1", new BridgeHandler() {
+            @Override
+            public void handle(String data) {
+                Log.d("jsbridge","get data from web" + data);
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                webView.send("onNativeButtonClick","message from java");
+                webView.loadUrl("http://10.1.1.167:3000");
+            }
+        });
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.send("invokeweb","msg from native");
             }
         });
 

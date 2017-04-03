@@ -1,5 +1,7 @@
 package com.muxistudio.jsbridge.example;
 
+import java.util.List;
+
 /**
  * Created by ybao (ybaovv@gmail.com)
  * Date: 17/3/6
@@ -7,5 +9,11 @@ package com.muxistudio.jsbridge.example;
 
 public class WebData {
 
-    public int id;
+    public List<TransData> lists;
+
+    public static class TransData{
+        public String time;
+        public String transMoney;
+    }
+
 }

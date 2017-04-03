@@ -26,9 +26,10 @@ public class BridgeChromeClient extends WebChromeClient {
         Gson gson = new Gson();
         try {
             Message msg = gson.fromJson(message, Message.class);
-            if (!TextUtils.isEmpty(msg.event)){
+            if (!TextUtils.isEmpty(msg.event)) {
                 mWebView.handlers.get(msg.event).handle(msg.data.toString());
-            }else {
+                result.confirm();
+            } else {
                 return false;
             }
             return true;

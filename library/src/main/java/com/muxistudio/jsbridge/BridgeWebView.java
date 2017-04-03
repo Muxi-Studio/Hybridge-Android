@@ -16,8 +16,11 @@ import java.util.HashMap;
 public class BridgeWebView extends WebView {
 
     public HashMap<String, BridgeHandler> handlers;
+    private InjectedObject mInjectedObject;
 
-    public static final String JS_SEND_DATA_FORMAT = "window.yajb.trigger('%s');";
+    public static final String INJECTED_OBJECT_NAME = "javaInterface";
+
+    public static final String JS_SEND_DATA_FORMAT = "window.YAJB_INSTANCE._emit('%s');";
 
     public BridgeWebView(Context context) {
         this(context, null);
@@ -34,8 +37,17 @@ public class BridgeWebView extends WebView {
 
     public void  init() {
         handlers = new HashMap<>();
-        addJavascriptInterface(new InjectedObject(),"javaInterface");
+        mInjectedObject = new InjectedObject();
+        addJavascriptInterface(mInjectedObject,"javaInterface");
         setWebChromeClient(new BridgeChromeClient(this));
+    }
+
+    public void setInitData(String json){
+        mInjectedObject.setData(json);
+    }
+
+    public void setInitData(Object data){
+        mInjectedObject.setData(data);
     }
 
     public void send(String event, int param) {
@@ -79,6 +91,7 @@ public class BridgeWebView extends WebView {
      */
     public void register(String event, BridgeHandler handler) {
         handlers.put(event, handler);
+//        mInjectedObject.send(event);
     }
 
 }
