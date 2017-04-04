@@ -1,37 +1,148 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="content-type">
-    <title>
-        webview
-    </title>
-    <script>
-
-    </script>
+    <meta charset="utf-8">
+    <title>jsbridge</title>
 </head>
-
 <body>
-<p id="msg_in_js">
-</p>
-<p id="msg_from_java">
-</p>
-<p>
-    <input type="button" id="btn2" value="send event to native" onclick="testClick1();"/>
-</p>
-</body>
-
+<button id="btn">send</button>
+<button id="btn1">console</button>
 <script>
 
+// YAJB-JavaScript install by npm
 
-var option = {
-    event: "click",
-    data: "web data test"
+console.log('begin jsbridge');
+
+var YAJB = function(){
+  this.eventQueue = [];
+  this.counter = 1;
+  var options;
+  this.isAndroid = false;
+  this.isiOS = false;
+  // get global options
+  if (window.javaInterface) {
+    options = JSON.parse(window.javaInterface.toString());
+    this.isAndroid = true;
+  }else if (window.YAJB_INJECT){
+    options = window.YAJB_INJECT;
+    this.isiOS = true;
+  }
+  else {
+    throw new Error('No Global Inject Object detected, please use yajb-js in a YAJB WebView Environment.');
+  }
+  this.platform = options.platform;
+  this.data = options.data;
+  window.YAJB_INSTANCE = this; 
+};
+
+YAJB.prototype.isMobile = function() {
+  if (window.javaInterface || window.YAJB_INJECT) {
+    return true
+  }else {
+    return false
+  }
+};
+
+YAJB.prototype._emit = function(option){
+  var opt = JSON.parse(option);
+  // trigger event
+    //this.messageQueue.push(opt)  
+    this.checkQueue(opt);
+  // this.events[option.name].apply({}, option.data)
+};
+
+YAJB.prototype._send = function(option) {
+  if (this.isAndroid) {
+    // window.alert(JSON.stringify(option))
+    window.location = "hybrid://" + option.event + ':' + option.id + '/'+ option.data;
+  }else if (this.isiOS) {
+    // window.postMessage
+  }
+};
+
+YAJB.prototype.checkQueue = function(option){
+  var event = this.eventQueue.find(function(item){
+    return item.id == option.id
+  });
+  event.callback(option.data);
+};
+
+// YAJB.prototype.on = function(event, callback) {
+//  //register event
+//     if(!YAJB.events[event]) {
+//       YAJB.events[event] = [];
+//     }
+//     YAJB.events[event].push(callback);
+// }
+
+YAJB.prototype.send = function(event, data) {
+  var that = this;
+  return new Promise(function(resolve, reject){
+    that.eventQueue.push({
+      event: event + "Resolved",
+      id : that.counter,
+      callback: function(value){
+        console.log("resolve");
+        resolve(value);
+      }
+    });
+    that._send({event:event,id:that.counter,data:JSON.stringify(data)});
+    that.counter++;
+  })
+};
+
+YAJB.prototype.register = function(event,fn){
+  this.eventQueue.push({
+    event: event,
+    callback: fn
+  });
 };
 
 
-function testClick1(){
-window.location= 'hybrid://click1:1000/{"data":"hello web"}';
-}
+YAJB.prototype._trigger = function(option){
+  var opt = JSON.parse(option);
+  var event = this.eventQueue.find(function(item){
+    return item.event === opt.event
+  });
+  var that = this;
+  event.id = opt.id;
+  event.callback(opt.data,function(result){
+    var op = {event: opt.event + 'Resolved',data:result,id:opt.id};
+    that._send(op);
+  });
+};
+
+
 
 </script>
+<script>
+//var YAJB = require('yajb-js');
+console.log('load yajb');
+var yajb = new YAJB()
 
+var p
+var btn = document.querySelector("#btn")
+var btn1 = document.querySelector("#btn1")
+btn.addEventListener("click", function(){
+  p = yajb.send("click", {value:1})
+  p.then(function(val){
+    btn.innerHTML = "success"+val
+  }) 
+})
+
+
+yajb.register("emit", function(data,fn){
+    console.log(data)
+    var result = data + "haha"
+    fn(result)
+})
+
+btn1.addEventListener("click", function(){
+  yajb.send("click", {value:1})
+})
+
+var data = JSON.parse(yajb.data).lists
+
+</script>
+</body>
 </html>

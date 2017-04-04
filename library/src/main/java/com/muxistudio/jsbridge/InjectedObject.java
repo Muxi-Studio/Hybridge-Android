@@ -21,18 +21,6 @@ public class InjectedObject {
     public String platform = "android";
     public String data;
 
-//    private BridgeWebView mBridgeWebView;
-//    private Map<String,BridgeHandler> mBridgeHandlers = new HashMap<>();
-//
-//    public void InjectedObject(BridgeWebView webView){
-//        mBridgeWebView = webView;
-//    }
-
-//    @JavascriptInterface
-//    public void send(String json){
-//        mBridgeHandlers.get(json).
-//    }
-
     @JavascriptInterface
     public String toString(){
         return new Gson().toJson(this,InjectedObject.class);

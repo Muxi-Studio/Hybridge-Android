@@ -6,6 +6,7 @@ package com.muxistudio.jsbridge;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tencent.smtt.sdk.WebView;
@@ -18,11 +19,11 @@ public class BridgeWebView extends WebView {
     public HashMap<String, BridgeHandler> responseHandlers;
     private InjectedObject mInjectedObject;
 
-    private int uniqueId = 0;
+    private int uniqueId = 1000;
 
     public static final String INJECTED_OBJECT_NAME = "javaInterface";
 
-    public static final String JS_SEND_DATA_FORMAT = "window.YAJB_INSTANCE._emit('%s');";
+    public static final String JS_SEND_DATA_FORMAT = "window.YAJB_INSTANCE._trigger('%s');";
 
     public BridgeWebView(Context context) {
         this(context, null);
@@ -41,51 +42,61 @@ public class BridgeWebView extends WebView {
         handlers = new HashMap<>();
         responseHandlers = new HashMap<>();
         mInjectedObject = new InjectedObject();
-        addJavascriptInterface(mInjectedObject, "javaInterface");
+        addJavascriptInterface(mInjectedObject, INJECTED_OBJECT_NAME);
         setWebViewClient(new BridgeWebClient(this));
     }
 
-    public void setInitData(String json) {
-        mInjectedObject.setData(json);
-    }
-
+    /**
+     * inject init data like {"platform":"android","data":"jsondata"}
+     */
     public void setInitData(Object data) {
         mInjectedObject.setData(data);
     }
 
     public void send(String event, int param) {
-        send(event, new SimpleParams<>(param));
+        send(event, param, null);
     }
 
     public void send(String event, boolean param) {
-        send(event, new SimpleParams<>(param));
+        send(event, param, null);
     }
 
     public void send(String event, float param) {
-        send(event, new SimpleParams<>(param));
+        send(event, param, null);
     }
 
     public void send(String event, String param) {
-        send(event, new SimpleParams<>(param));
+        send(event, param, null);
     }
 
     /**
      * send event,the object should be jsonObject
      */
     public void send(String event, Object jsonObject) {
-        send(event,jsonObject,null);
+        send(event, jsonObject, null);
     }
 
-    public void send(String event,Object jsonObject,BridgeHandler callbackHandler){
+    /**
+     * send event , handle returned data with BridgeHandler
+     *
+     * @param event           event name
+     * @param callbackHandler do something with returned data
+     */
+    public void send(String event, Object jsonObject, BridgeHandler callbackHandler) {
+        send(event, jsonObject, callbackHandler, ++uniqueId);
+    }
+
+    public void send(String event, Object jsonObject, BridgeHandler callbackHandler, int id) {
         Message message = new Message();
         message.event = event;
         message.data = jsonObject;
-        message.id = uniqueId++;
+        message.id = id;
         try {
             String json = new Gson().toJson(message);
-            if (callbackHandler != null){
-                responseHandlers.put(event + "Resolved" + (message.id),callbackHandler);
+            if (callbackHandler != null) {
+                responseHandlers.put(event + "Resolved" + (message.id), callbackHandler);
             }
+            Log.d("jsbridge", String.format(JS_SEND_DATA_FORMAT, json));
             evaluateJavascript(String.format(JS_SEND_DATA_FORMAT, json), null);
         } catch (Exception e) {
             e.printStackTrace();
