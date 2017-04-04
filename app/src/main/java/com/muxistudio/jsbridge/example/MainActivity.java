@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
             @Override
             public void handle(String data, CallbackFunc cb) {
                 Log.d("jsbridge", data);
+
                 cb.onCallback("msg from native");
             }
         });
@@ -49,6 +50,12 @@ public class MainActivity extends Activity {
                         Log.d("jsbridge", data);
                     }
                 });
+
+                //or you can send with simple params. serialize to string like {"event":"emit","data":2}
+//                webView.send("emit",2);
+//                webView.send("emit",true);
+//                webView.send("emit",4.5);
+//                webView.send("emit","native message");
             }
         });
 

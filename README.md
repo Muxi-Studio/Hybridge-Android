@@ -50,13 +50,16 @@ Use with [YAJB-JavaScript](https://github.com/Muxi-Studio/YAJB-JavaScript)
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
+
         //register handler to handle event from web
-        webView.register("onBtnClick", new BridgeHandler() {
+        webView.register("click", new BridgeHandler() {
             @Override
-            public void handle(String data) {
-                Gson gson = new Gson();
-                IntData intData = gson.fromJson(data,IntData.class);
-                Toast.makeText(MainActivity.this,"id:" + intData.id,Toast.LENGTH_LONG).show();
+            public void handle(String data,CallbackFunc cb) {
+                Log.d("jsbridge", data);
+
+                //return result to web should call cb.onCallback()
+                String result = "msg from native";
+                cb.onCallback(result);
             }
         });
 
@@ -66,7 +69,21 @@ Use with [YAJB-JavaScript](https://github.com/Muxi-Studio/YAJB-JavaScript)
             @Override
             public void onClick(View view) {
                 //send event to web, invoke yajb.trigger('{"event":"onNativeButtonClick","data":{...}');
-                webView.send("onNativeButtonClick","message from java");
+                webView.send("emit", "native msg", new BridgeHandler() {
+                      @Override
+                      public void handle(String data, CallbackFunc cb) {
+                          Log.d("jsbridge", data);
+
+                          //do what want to do with return data from web.
+                      }
+                });
+
+                //or just send simple params.
+//                webView.send("emit",2);
+//                webView.send("emit",true);
+//                webView.send("emit",4.5);
+//                webView.send("emit","native message");
+
 
             }
         });
