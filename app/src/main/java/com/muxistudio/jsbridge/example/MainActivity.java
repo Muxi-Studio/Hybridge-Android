@@ -28,6 +28,9 @@ public class MainActivity extends Activity {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
 
+        //inject initialized data
+        webView.setInitData("init data from native");
+
         webView.loadUrl("file:///android_asset/demo.html");
 
         //js call java

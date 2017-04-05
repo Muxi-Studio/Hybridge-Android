@@ -5,6 +5,30 @@ Use with [YAJB-JavaScript](https://github.com/Muxi-Studio/YAJB-JavaScript)
 
 ## Install
 
+### Gradle
+
+Step 1. Add the JitPack repository to your build file
+
+```gradle
+
+Add it in your root build.gradle at the end of repositories:
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+Step 2. Add the dependency
+
+```gradle
+	dependencies {
+	        compile 'com.github.Muxi-Studio:YAJB-Android:0.9'
+	}
+```
+
 ## Usage
 
 - in xml
@@ -51,6 +75,9 @@ Use with [YAJB-JavaScript](https://github.com/Muxi-Studio/YAJB-JavaScript)
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
 
+        //inject initialized data
+        webView.setInitData("init data from native");
+
         //register handler to handle event from web
         webView.register("click", new BridgeHandler() {
             @Override
@@ -72,13 +99,13 @@ Use with [YAJB-JavaScript](https://github.com/Muxi-Studio/YAJB-JavaScript)
                 webView.send("emit", "native msg", new BridgeHandler() {
                       @Override
                       public void handle(String data, CallbackFunc cb) {
-                          Log.d("jsbridge", data);
 
                           //do what want to do with return data from web.
+                          Log.d("jsbridge", data);
                       }
                 });
 
-                //or just send simple params.
+//                or just send simple params.
 //                webView.send("emit",2);
 //                webView.send("emit",true);
 //                webView.send("emit",4.5);

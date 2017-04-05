@@ -38,7 +38,7 @@ public class BridgeWebView extends WebView {
         init();
     }
 
-    public void init() {
+    protected void init() {
         handlers = new HashMap<>();
         responseHandlers = new HashMap<>();
         mInjectedObject = new InjectedObject();
