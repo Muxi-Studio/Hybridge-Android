@@ -1,4 +1,7 @@
 # YAJB-Android
+
+[![](https://jitpack.io/v/Muxi-Studio/YAJB-Android.svg)](https://jitpack.io/#Muxi-Studio/YAJB-Android)
+
 Yet Another JavaScript Bridge, Android version.
   
 Use with [YAJB-JavaScript](https://github.com/Muxi-Studio/YAJB-JavaScript)
@@ -25,7 +28,7 @@ Step 2. Add the dependency
 
 ```gradle
 	dependencies {
-	        compile 'com.github.Muxi-Studio:YAJB-Android:0.9'
+	        compile 'com.github.Muxi-Studio:YAJB-Android:1.0'
 	}
 ```
 
