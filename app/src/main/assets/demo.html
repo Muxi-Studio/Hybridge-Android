@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
     <title>jsbridge</title>
-</head>
-<body>
-<button id="btn">send</button>
-<button id="btn1">console</button>
-<script>
-
-// YAJB-JavaScript install by npm
-
-console.log('begin jsbridge');
+  </head>
+  <body>
+   <button id="btn">send</button>
+   <button id="btn1">console</button>
+    <script>
 
 var YAJB = function(){
   this.eventQueue = [];
@@ -113,11 +109,8 @@ YAJB.prototype._trigger = function(option){
 };
 
 
-
-</script>
-<script>
-//var YAJB = require('yajb-js');
-console.log('load yajb');
+    </script>
+    <script>
 var yajb = new YAJB()
 
 var p
@@ -142,7 +135,6 @@ btn1.addEventListener("click", function(){
 })
 
 var data = JSON.parse(yajb.data).lists
-
-</script>
-</body>
+    </script>
+  </body>
 </html>

@@ -23,7 +23,7 @@ public class BridgeWebView extends WebView {
 
     public static final String INJECTED_OBJECT_NAME = "javaInterface";
 
-    public static final String JS_SEND_DATA_FORMAT = "window.YAJB_INSTANCE._trigger('%s');";
+    public static final String JS_SEND_DATA_FORMAT = "javascript:window.YAJB_INSTANCE._trigger('%s');";
 
     public BridgeWebView(Context context) {
         this(context, null);
@@ -97,7 +97,7 @@ public class BridgeWebView extends WebView {
                 responseHandlers.put(event + "Resolved" + (message.id), callbackHandler);
             }
             Log.d("jsbridge", String.format(JS_SEND_DATA_FORMAT, json));
-            evaluateJavascript(String.format(JS_SEND_DATA_FORMAT, json), null);
+            this.loadUrl(String.format(JS_SEND_DATA_FORMAT, json), null);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException("the object should be jsonObject");
