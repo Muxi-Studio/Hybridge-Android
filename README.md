@@ -14,7 +14,7 @@ Step 1. Add the JitPack repository to your build file
 
 ```gradle
 
-Add it in your root build.gradle at the end of repositories:
+//Add it in your root build.gradle at the end of repositories:
 
 	allprojects {
 		repositories {
@@ -78,7 +78,7 @@ Step 2. Add the dependency
         settings.setJavaScriptEnabled(true);
         settings.setAppCacheEnabled(true);
 
-        //inject initialized data
+        //inject initialized data,just normal string or java object, not json!
         webView.setInitData("init data from native");
 
         //register handler to handle event from web
